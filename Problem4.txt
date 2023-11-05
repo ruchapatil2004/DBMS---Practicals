@@ -1,0 +1,385 @@
+Problem Statement 4 :-
+Name :- Rucha Bhalchandra Patil
+Std.:- TE	Div.:- B	Roll.No.:- 09
+
+Question :-
+
+Create following collections and Perform Mongodb CRUD Operations.
+Teachers (Tname, dno, dname, experience, salary, date_of_joining )
+Students(Sname, roll_no, class)
+1.     Find the information about all teachers alphabetically.
+2.     Find the information about all teachers of the computer department
+3.     Find the information about all teachers of computer,IT,and e&amp;TC department
+4.     Find the information about all teachers of computer,IT,and E&amp;TC department having
+salary greater than or equal to 10000/-
+6.     Find the student information having roll_no = 2 or Sname=xyz
+7.     Update the experience of teacher-praveen to 10 years, if the entry is not available in
+database consider the entry as new entry.
+9.     Update the department of all the teachers working in IT department to COMP
+10.  find the teacher&#39;s name and their experience from teachers’ collection
+11.  Delete all the documents from teacher&#39;s collection having IT dept.
+12.  display with pretty() method, the first 3 documents in teacher&#39;s collection in ascending
+order.
+
+Solution :-
+
+Microsoft Windows [Version 10.0.22621.2428]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\hp>mongosh
+Current Mongosh Log ID: 6544dbc6f437b4b0f92d792c
+Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.0.1
+Using MongoDB:          7.0.1
+Using Mongosh:          2.0.1
+mongosh 2.0.2 is available for download: https://www.mongodb.com/try/download/shell
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2023-10-25T17:59:21.017+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+------
+
+test> use test;
+already on db test
+test> db.createCollection ('teachers');
+{ ok: 1 }
+test> db.teachers.insertMany([
+... {tname : 'Praveen',
+... dno : 101,
+... dname : 'Computer',
+... experience : 10,
+... salary : 15000,
+... doj : '2021-10-1'},
+... {tname : 'Riya',
+... dno : 102,
+... dname : 'IT',
+... experience : 5,
+... salary : 11000,
+... doj : '2022-04-04'},
+... {tname : 'Leena',
+... dno : 103,
+... dname : 'ENTC',
+... experience : 4,
+... salary : 9000,
+... doj : '2023-01-01'},
+... {tname : 'Raj',
+... dno : 101,
+... dname : 'Computer',
+... experience : 6,
+... salary : 12000,
+... doj : '2022-04-04'}]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("6544dd94f437b4b0f92d792d"),
+    '1': ObjectId("6544dd94f437b4b0f92d792e"),
+    '2': ObjectId("6544dd94f437b4b0f92d792f"),
+    '3': ObjectId("6544dd94f437b4b0f92d7930")
+  }
+}
+test> db.teachers.find();
+[
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792d"),
+    tname: 'Praveen',
+    dno: 101,
+    dname: 'Computer',
+    experience: 10,
+    salary: 15000,
+    doj: '2021-10-1'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792e"),
+    tname: 'Riya',
+    dno: 102,
+    dname: 'IT',
+    experience: 5,
+    salary: 11000,
+    doj: '2022-04-04'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792f"),
+    tname: 'Leena',
+    dno: 103,
+    dname: 'ENTC',
+    experience: 4,
+    salary: 9000,
+    doj: '2023-01-01'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d7930"),
+    tname: 'Raj',
+    dno: 101,
+    dname: 'Computer',
+    experience: 6,
+    salary: 12000,
+    doj: '2022-04-04'
+  }
+]
+test> db.createCollection ('students');
+{ ok: 1 }
+test> db.students.insertMany([
+... {sname : 'abc',
+... roll_no : 1,
+... class : 'TE'},
+... {sname : 'xyz',
+... roll_no : 2,
+... class : 'TE'},
+... {sname : 'pqr',
+... roll_no : 3,
+... class : 'TE'},
+... {sname : 'uvw',
+... roll_no : 4,
+... class : 'TE'}]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("6544dec9f437b4b0f92d7931"),
+    '1': ObjectId("6544dec9f437b4b0f92d7932"),
+    '2': ObjectId("6544dec9f437b4b0f92d7933"),
+    '3': ObjectId("6544dec9f437b4b0f92d7934")
+  }
+}
+test> db.students.find();
+[
+  {
+    _id: ObjectId("6544dec9f437b4b0f92d7931"),
+    sname: 'abc',
+    roll_no: 1,
+    class: 'TE'
+  },
+  {
+    _id: ObjectId("6544dec9f437b4b0f92d7932"),
+    sname: 'xyz',
+    roll_no: 2,
+    class: 'TE'
+  },
+  {
+    _id: ObjectId("6544dec9f437b4b0f92d7933"),
+    sname: 'pqr',
+    roll_no: 3,
+    class: 'TE'
+  },
+  {
+    _id: ObjectId("6544dec9f437b4b0f92d7934"),
+    sname: 'uvw',
+    roll_no: 4,
+    class: 'TE'
+  }
+]
+test> db.teachers.find().sort({tname : 1});
+[
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792f"),
+    tname: 'Leena',
+    dno: 103,
+    dname: 'ENTC',
+    experience: 4,
+    salary: 9000,
+    doj: '2023-01-01'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792d"),
+    tname: 'Praveen',
+    dno: 101,
+    dname: 'Computer',
+    experience: 10,
+    salary: 15000,
+    doj: '2021-10-1'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d7930"),
+    tname: 'Raj',
+    dno: 101,
+    dname: 'Computer',
+    experience: 6,
+    salary: 12000,
+    doj: '2022-04-04'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792e"),
+    tname: 'Riya',
+    dno: 102,
+    dname: 'IT',
+    experience: 5,
+    salary: 11000,
+    doj: '2022-04-04'
+  }
+]
+
+test> db.teachers.find({dname:'Computer'});
+[
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792d"),
+    tname: 'Praveen',
+    dno: 101,
+    dname: 'Computer',
+    experience: 10,
+    salary: 15000,
+    doj: '2021-10-1'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d7930"),
+    tname: 'Raj',
+    dno: 101,
+    dname: 'Computer',
+    experience: 6,
+    salary: 12000,
+    doj: '2022-04-04'
+  }
+]
+test> db.teachers.find({dname : {$in: ['Computer','IT','ENTC']}})
+[
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792d"),
+    tname: 'Praveen',
+    dno: 101,
+    dname: 'Computer',
+    experience: 10,
+    salary: 15000,
+    doj: '2021-10-1'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792e"),
+    tname: 'Riya',
+    dno: 102,
+    dname: 'IT',
+    experience: 5,
+    salary: 11000,
+    doj: '2022-04-04'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792f"),
+    tname: 'Leena',
+    dno: 103,
+    dname: 'ENTC',
+    experience: 4,
+    salary: 9000,
+    doj: '2023-01-01'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d7930"),
+    tname: 'Raj',
+    dno: 101,
+    dname: 'Computer',
+    experience: 6,
+    salary: 12000,
+    doj: '2022-04-04'
+  }
+]
+test> db.teachers.find({dname:{$in:['Computer','IT','ENTC']},salary: {$gte:10000}})
+[
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792d"),
+    tname: 'Praveen',
+    dno: 101,
+    dname: 'Computer',
+    experience: 10,
+    salary: 15000,
+    doj: '2021-10-1'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792e"),
+    tname: 'Riya',
+    dno: 102,
+    dname: 'IT',
+    experience: 5,
+    salary: 11000,
+    doj: '2022-04-04'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d7930"),
+    tname: 'Raj',
+    dno: 101,
+    dname: 'Computer',
+    experience: 6,
+    salary: 12000,
+    doj: '2022-04-04'
+  }
+]
+
+test> db.students.find({$or:[{roll_no:2},{sname:'xyz'}]})
+[
+  {
+    _id: ObjectId("6544dec9f437b4b0f92d7932"),
+    sname: 'xyz',
+    roll_no: 2,
+    class: 'TE'
+  }
+]
+
+test> db.teachers.update({tname:'Praveen'},{$set:{experience:10}},{upsert:true})
+DeprecationWarning: Collection.update() is deprecated. Use updateOne, updateMany, or bulkWrite.
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+test> db.teachers.update({dname:'IT'},{$set:{dname:'Computer'}},{multi:true})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+test> db.teachers.find({},{tname:1, experience: 1})
+[
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792d"),
+    tname: 'Praveen',
+    experience: 10
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792e"),
+    tname: 'Riya',
+    experience: 5
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792f"),
+    tname: 'Leena',
+    experience: 4
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d7930"),
+    tname: 'Raj',
+    experience: 6
+  }
+]
+test> db.teachers.remove({dname:'IT'})
+DeprecationWarning: Collection.remove() is deprecated. Use deleteOne, deleteMany, findOneAndDelete, or bulkWrite.
+{ acknowledged: true, deletedCount: 0 }
+test> db.teachers.find().sort({tname:1}).limit(3).pretty()
+[
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792f"),
+    tname: 'Leena',
+    dno: 103,
+    dname: 'ENTC',
+    experience: 4,
+    salary: 9000,
+    doj: '2023-01-01'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d792d"),
+    tname: 'Praveen',
+    dno: 101,
+    dname: 'Computer',
+    experience: 10,
+    salary: 15000,
+    doj: '2021-10-1'
+  },
+  {
+    _id: ObjectId("6544dd94f437b4b0f92d7930"),
+    tname: 'Raj',
+    dno: 101,
+    dname: 'Computer',
+    experience: 6,
+    salary: 12000,
+    doj: '2022-04-04'
+  }
+]
+test>

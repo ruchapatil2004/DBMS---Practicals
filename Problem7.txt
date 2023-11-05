@@ -1,0 +1,119 @@
+Problem Statement 7:-
+Name :- Rucha Bhalchandra Patil
+Std.:- TE	Div.:- B	Roll.No.:- 09
+
+Question :-
+
+Unnamed PL/SQLcode block: Use of Control structure and Exception handling is
+mandatory.
+Suggested Problem statement:
+Consider Tables:
+1. Borrower (Roll_no, Name, Date_of_Issue, Name_of_Book, Status)
+2. Fine (Roll_no, Date, Amt)
+ Accept Roll_no and Name_of_Book from user.
+ Check the number of days (from Date_of_Issue).
+ If days are between 15 to 30 then fine amount will be Rs 5per day.
+ If no. of days&gt;30, per day fine will be Rs 50 per day and for days less than 30, Rs. 5 per
+day.
+ After submitting the book, status will change from I to R.
+ If condition of fine is true, then details will be stored into fine table.
+
+Solution :-
+
+Microsoft Windows [Version 10.0.22621.2428]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\hp>mysql -u root -p
+Enter password: ******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 18
+Server version: 8.0.34 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sample             |
+| sys                |
+| test               |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> use test;
+Database changed
+mysql> create table borrower(rollno int primary key, doi date, nameofbook varchar(30), status varchar(30));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> create table fine(rollno int, Date date, amt int);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> insert into borrower values (1,"2023-4-21","AI","I"),(2,"2022-10-10","DBMS","I"),(3,"
+2023-1-10","CN","I"),(4,"2023-11-11","HCI","I");
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> select * from borrower;
++--------+------------+------------+--------+
+| rollno | doi        | nameofbook | status |
++--------+------------+------------+--------+
+|      1 | 2023-04-21 | AI         | I      |
+|      2 | 2022-10-10 | DBMS       | I      |
+|      3 | 2023-01-10 | CN         | I      |
+|      4 | 2023-11-11 | HCI        | I      |
++--------+------------+------------+--------+
+4 rows in set (0.00 sec)
+
+mysql> DELIMITER //
+mysql> CREATE PROCEDURE CalculateFine(IN rno INT, IN bookname VARCHAR(30))
+    -> BEGIN
+    ->   DECLARE dateofissue DATE;
+    ->   DECLARE stat VARCHAR(30);
+    ->   DECLARE days_late INT;
+    ->   DECLARE fine_amt INT;
+    ->
+    ->   DECLARE EXIT HANDLER FOR SQLEXCEPTION SELECT "Record Not Found";
+    ->
+    ->   SELECT doi, status INTO dateofissue, stat FROM borrower WHERE rollno = rno AND nameofbook = bookname;
+    ->
+    ->   SET days_late = DATEDIFF(CURDATE(), dateofissue);
+    ->
+    ->   IF days_late > 30 THEN
+    ->     SET fine_amt = days_late * 50;
+    ->   ELSE
+    ->     SET fine_amt = days_late * 5;
+    ->   END IF;
+    ->
+    ->   INSERT INTO fine VALUES (rno, dateofissue, fine_amt);
+    ->
+    ->   UPDATE borrower
+    ->   SET status = 'R'
+    ->   WHERE rollno = rno AND nameofbook = bookname;
+    -> END //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> DELIMITER ;
+mysql> call cafine(1,"AI");
+ERROR 1305 (42000): PROCEDURE test.cafine does not exist
+mysql> call CalculateFine(1,"AI");
+Query OK, 1 row affected (0.02 sec)
+
+mysql> select * from fine;
++--------+------------+------+
+| rollno | Date       | amt  |
++--------+------------+------+
+|      1 | 2023-04-21 | 9900 |
++--------+------------+------+
+1 row in set (0.00 sec)
+
+mysql>

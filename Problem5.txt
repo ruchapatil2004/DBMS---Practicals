@@ -1,0 +1,218 @@
+Problem Statement 5:-
+Name :- Rucha Bhalchandra Patil
+Std.:- TE	Div.:- B	Roll.No.:- 09
+
+Question :-
+
+MongoDB Aggregation
+You have been given a dataset containing details about different books. Each book has the
+following fields:
+ title: The title of the book
+ author: The author of the book
+ genre: The genre of the book (e.g., Fiction, Non-Fiction, Mystery, Sci-Fi)
+ price: The price of the book
+ published_date: The date the book was published.
+The data has been stored in a MongoDB collection named books.
+Using the MongoDB aggregation framework, perform the following tasks:
+1. Find the average price of all books.
+2. Find the count of books in each genre.
+3. For each genre, find the most expensive book.
+4. Find the authors who have written maximum books.
+5. Sort the books by published_date in descending order.
+6. Sort the price in ascending order.
+7. create an index on title of the book and describe the index details
+
+Solution :-
+
+Microsoft Windows [Version 10.0.22621.2428]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\hp>mongosh
+Current Mongosh Log ID: 6544e4d8f692dd4b5efe6a29
+Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.0.1
+Using MongoDB:          7.0.1
+Using Mongosh:          2.0.1
+mongosh 2.0.2 is available for download: https://www.mongodb.com/try/download/shell
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2023-10-25T17:59:21.017+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+------
+
+test> use test
+already on db test
+test> db.createCollection('books')
+{ ok: 1 }
+
+test> db.books.insertMany([{ title:'abc', author:'lily', genre:'fiction', price:100, date:'2021-03-03'}, {title:'pqr', author:'jack', genre:'non-fiction', price : 500, date : '2022-10-10'}, {title:'xyz', author:'rose', genre:'mystery', price:900, date : '2023-04-04'}, {title:'uvw', author : 'liam', genre : 'sci-fi', price : 700, date : '2021-05-05'}])
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("6544e7c5f692dd4b5efe6a2a"),
+    '1': ObjectId("6544e7c5f692dd4b5efe6a2b"),
+    '2': ObjectId("6544e7c5f692dd4b5efe6a2c"),
+    '3': ObjectId("6544e7c5f692dd4b5efe6a2d")
+  }
+}
+test> db.books.find();
+[
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2a"),
+    title: 'abc',
+    author: 'lily',
+    genre: 'fiction',
+    price: 100,
+    date: '2021-03-03'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2b"),
+    title: 'pqr',
+    author: 'jack',
+    genre: 'non-fiction',
+    price: 500,
+    date: '2022-10-10'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2c"),
+    title: 'xyz',
+    author: 'rose',
+    genre: 'mystery',
+    price: 900,
+    date: '2023-04-04'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2d"),
+    title: 'uvw',
+    author: 'liam',
+    genre: 'sci-fi',
+    price: 700,
+    date: '2021-05-05'
+  }
+]
+test> db.books.aggregate([{$group:{_id:null, avgPrice: {$avg: "$price"}}}])
+[ { _id: null, avgPrice: 550 } ]
+test> db.books.aggregate([{$group:{_id:"$genre", maxPrice: {$max: "$price"}}}])
+[
+  { _id: 'fiction', maxPrice: 100 },
+  { _id: 'non-fiction', maxPrice: 500 },
+  { _id: 'mystery', maxPrice: 900 },
+  { _id: 'sci-fi', maxPrice: 700 }
+]
+
+test> db.books.aggregate([{$group:{_id:"$author", count:{$sum:1}}},{$sort:{count:-1}},{$limit:1}])
+[ { _id: 'jack', count: 1 } ]
+test> db.books.aggregate([{$sort:{date:-1}}])
+[
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2c"),
+    title: 'xyz',
+    author: 'rose',
+    genre: 'mystery',
+    price: 900,
+    date: '2023-04-04'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2b"),
+    title: 'pqr',
+    author: 'jack',
+    genre: 'non-fiction',
+    price: 500,
+    date: '2022-10-10'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2d"),
+    title: 'uvw',
+    author: 'liam',
+    genre: 'sci-fi',
+    price: 700,
+    date: '2021-05-05'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2a"),
+    title: 'abc',
+    author: 'lily',
+    genre: 'fiction',
+    price: 100,
+    date: '2021-03-03'
+  }
+]
+test> db.books.aggregate([{$sort:{price:1}}])
+[
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2a"),
+    title: 'abc',
+    author: 'lily',
+    genre: 'fiction',
+    price: 100,
+    date: '2021-03-03'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2b"),
+    title: 'pqr',
+    author: 'jack',
+    genre: 'non-fiction',
+    price: 500,
+    date: '2022-10-10'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2d"),
+    title: 'uvw',
+    author: 'liam',
+    genre: 'sci-fi',
+    price: 700,
+    date: '2021-05-05'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2c"),
+    title: 'xyz',
+    author: 'rose',
+    genre: 'mystery',
+    price: 900,
+    date: '2023-04-04'
+  }
+]
+test> db.books.createIndex({title:1})
+title_1
+test> db.books.getIndexes()
+[
+  { v: 2, key: { _id: 1 }, name: '_id_' },
+  { v: 2, key: { title: 1 }, name: 'title_1' }
+]
+test> db.books.find()
+[
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2a"),
+    title: 'abc',
+    author: 'lily',
+    genre: 'fiction',
+    price: 100,
+    date: '2021-03-03'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2b"),
+    title: 'pqr',
+    author: 'jack',
+    genre: 'non-fiction',
+    price: 500,
+    date: '2022-10-10'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2c"),
+    title: 'xyz',
+    author: 'rose',
+    genre: 'mystery',
+    price: 900,
+    date: '2023-04-04'
+  },
+  {
+    _id: ObjectId("6544e7c5f692dd4b5efe6a2d"),
+    title: 'uvw',
+    author: 'liam',
+    genre: 'sci-fi',
+    price: 700,
+    date: '2021-05-05'
+  }
+]
+test>

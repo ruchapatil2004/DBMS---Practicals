@@ -1,0 +1,91 @@
+Problem Statement 2:-
+Name :- Rucha Bhalchandra Patil
+Std.:- T.E. 	Div.:- B 	Roll.No.:- 09
+
+Question :-
+
+Write a Stored Procedure namely proc_Grade for the categorization of student. If marks
+scored by students in examination is &lt;=1500 and marks&gt;=990 then student will be placed
+in distinction category if marks scored are between 989 and900 category is first class, if
+marks 899 and 825 category is Higher Second Class
+Write a PL/SQL block for using procedure created with above requirement.
+Stud_Marks(name, total_marks)
+Result(Roll,Name, Class)
+
+Solution :-
+
+C:\Users\hp>mysql -u root -p
+Enter password: ******
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 15
+Server version: 8.0.34 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2023, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sample             |
+| sys                |
+| test               |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> use test;
+Database changed
+mysql> create table stud_marks(name varchar(30), total_marks int);
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> create table result (roll int, name varchar(30), class varchar(30));
+Query OK, 0 rows affected (0.02 sec)
+
+mysql> delimiter //
+mysql> create procedure proc_Grade (in pname varchar(30), in ptotal_marks int, out proll int, out pclass varchar(30))
+    -> begin
+    -> set proll = floor(rand()*9000)+1000;
+    -> if ptotal_marks >= 990 and ptotal_marks <= 1500 then
+    -> set pclass = "Distinction";
+    -> elseif ptotal_marks >= 900 and ptotal_marks <= 989 then
+    -> set pclass = "First Class";
+    -> elseif ptotal_marks >= 825 and ptotal_marks <= 899 then
+    -> set pclass = "Higher Second Class";
+    -> else
+    -> set pclass = "Fail";
+    -> end if;
+    -> insert into result (roll, name, class) values (proll, pname, pclass);
+    -> end;
+    -> //
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> delimiter ;
+mysql> set @pname = "Rucha";
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> set @ptotal_marks = 985;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> call proc_Grade (@pname, @ptotal_marks, @proll, @pclass);
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from result;
++------+--------+-------------+
+| roll | name   | class       |
++------+--------+-------------+
+| NULL | Rucha  | First Class |
+| NULL | Apurva | Fail        |
+| NULL | Dadu   | Distinction |
+| 4701 | Rucha  | First Class |
++------+--------+-------------+
+4 rows in set (0.00 sec)
+
+mysql>

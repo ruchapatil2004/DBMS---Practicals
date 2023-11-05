@@ -1,0 +1,106 @@
+Problem Statement 6:-
+Name :- Rucha Bhalchandra Patil
+Std.:- TE	Div.:-B	Roll.No.:- 09
+
+Question :-
+
+A retail company maintains a MongoDB collection named customer. Each document in this
+collection represents a purchase and contains fields such as cid (Customer ID), cname
+(Customer Name), amount (Amount spent on product purchase), and product_name (Product
+Name).
+Implement a MapReduce function in MongoDB to analyze the customer collection and
+produce a summarized report that displays the total amount spent by each customer on
+product purchases.
+
+Solution :-
+
+Microsoft Windows [Version 10.0.22621.2428]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\hp>mongosh
+Current Mongosh Log ID: 654759db11046883cf38e298
+Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.0.1
+Using MongoDB:          7.0.1
+Using Mongosh:          2.0.1
+mongosh 2.0.2 is available for download: https://www.mongodb.com/try/download/shell
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2023-10-25T17:59:21.017+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+------
+
+test> use test;
+already on db test
+db.customer.insertMany([{ cid:1, cname:'Rucha', amount:1000, pname:'Vivo'}, {cid:2, cname:'Apu', amount:2000,
+... pname:'Samsung'},
+... {cid:3,
+... cname:'Dadu',
+... amount:5000,
+... pname:'Lenovo'},
+... {cid:4,
+... cname:'Hetal',
+... amount:6000,
+... pname:'Iphone'}]);
+{
+  acknowledged: true,
+  insertedIds: {
+    '0': ObjectId("65475ce311046883cf38e299"),
+    '1': ObjectId("65475ce311046883cf38e29a"),
+    '2': ObjectId("65475ce311046883cf38e29b"),
+    '3': ObjectId("65475ce311046883cf38e29c")
+  }
+}
+test> db.customer.find();
+[
+  {
+    _id: ObjectId("65475ce311046883cf38e299"),
+    cid: 1,
+    cname: 'Rucha',
+    amount: 1000,
+    pname: 'Vivo'
+  },
+  {
+    _id: ObjectId("65475ce311046883cf38e29a"),
+    cid: 2,
+    cname: 'Apu',
+    amount: 2000,
+    pname: 'Samsung'
+  },
+  {
+    _id: ObjectId("65475ce311046883cf38e29b"),
+    cid: 3,
+    cname: 'Dadu',
+    amount: 5000,
+    pname: 'Lenovo'
+  },
+  {
+    _id: ObjectId("65475ce311046883cf38e29c"),
+    cid: 4,
+    cname: 'Hetal',
+    amount: 6000,
+    pname: 'Iphone'
+  }
+]
+test> var Mapfunction = function(){emit(this.cid,this.amount)}
+
+test> var Reducefunction = function(key,values){return Array.sum(values)}
+
+test> db.customer.mapReduce(Mapfunction,Reducefunction,{out:"Customer_Summary"});
+DeprecationWarning: Collection.mapReduce() is deprecated. Use an aggregation instead.
+See https://docs.mongodb.com/manual/core/map-reduce for details.
+{ result: 'Customer_Summary', ok: 1 }
+test> db.customer.insertOne({cid:1,cname:'Rucha', amount:9000, pname:'micromax'});
+{
+  acknowledged: true,
+  insertedId: ObjectId("65475fb011046883cf38e29d")
+}
+test> db.Customer_Summary.find();
+[
+  { _id: 1, value: 1000 },
+  { _id: 4, value: 6000 },
+  { _id: 2, value: 2000 },
+  { _id: 3, value: 5000 }
+]
+test>
